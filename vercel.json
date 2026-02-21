@@ -1,0 +1,5 @@
+{
+  "buildCommand": "pnpm install && pnpm run build:merchant && pnpm run build:admin",
+  "outputDirectory": "apps/merchant/.next",
+  "installCommand": "pnpm install"
+}

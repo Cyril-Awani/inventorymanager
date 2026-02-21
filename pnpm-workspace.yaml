@@ -1,0 +1,4 @@
+packages:
+  - 'apps/merchant'
+  - 'apps/admin'
+  - 'packages/*'
