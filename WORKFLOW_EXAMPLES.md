@@ -38,7 +38,7 @@ STEPS:
 4. Sarah's session active, can make sales
 5. Displays: "⚠ Working offline - PIN from cache" badge
 
-IMPORTANT: 
+IMPORTANT:
 - This ONLY works if workers were synced BEFORE
 - If a NEW worker was added yesterday, they can't log in
 - Worker list won't be fresh, but existing workers work fine
@@ -64,7 +64,7 @@ STEPS:
    ② Gets saleId from IndexedDB
    ③ Shows receipt with AMBER banner:
       "⚠️ SAVED OFFLINE
-       This transaction will sync to the server 
+       This transaction will sync to the server
        when you're back online"
 6. Cart clears, ready for next customer
 7. Header updates: "🔴 Offline • 1 pending"
@@ -117,7 +117,7 @@ IndexedDB:
 ├── products: Cached from last load
 └── credits: 0 rows
 
-Server: 
+Server:
 ├── No new sales
 ├── No new transactions
 └── Unaware of offline activity
@@ -414,9 +414,9 @@ WHAT'S LOST:
 ❌ Products cache (can't see inventory)
 ❌ Worker list (can't login)
 
-IMPACT: 
+IMPACT:
 - Cannot proceed with sales
-- Cannot authenticate workers  
+- Cannot authenticate workers
 - Cannot even load products
 
 RECOVERY:
@@ -531,7 +531,7 @@ RESULT: Works fine, all sales clearly accumulated offline
 ├─ 47 customers still in store
 └─ Sales continue...
 
-10:30 - 11:30 (OFFLINE) 
+10:30 - 11:30 (OFFLINE)
 ┌─ One hour offline
 ├─ Next 60 sales all saved to IndexedDB
 ├─ Workers authenticate from cache

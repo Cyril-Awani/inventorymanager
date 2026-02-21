@@ -100,7 +100,8 @@ export function useStoreAuth() {
 			// Sync worker data for offline use
 			if (typeof window !== 'undefined' && navigator.onLine) {
 				try {
-					const { syncWorkerDataFromServer } = await import('@/lib/sync-manager');
+					const { syncWorkerDataFromServer } =
+						await import('@/lib/sync-manager');
 					await syncWorkerDataFromServer(authData);
 				} catch (error) {
 					console.warn('Failed to sync workers on login:', error);
