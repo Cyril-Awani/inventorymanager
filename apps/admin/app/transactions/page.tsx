@@ -26,7 +26,7 @@ import {
 	ChevronRight,
 	CheckCircle,
 	Clock,
-	Alert,
+	AlertCircle as Alert,
 	Download,
 } from 'lucide-react';
 
