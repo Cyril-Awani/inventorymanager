@@ -1,0 +1,234 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model StoreTypeDef {
+  id           String        @id @default(cuid())
+  key          String        @unique
+  label        String
+  icon         String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  catalogItems CatalogItem[]
+}
+
+model CatalogItem {
+  id               String       @id @default(cuid())
+  storeTypeId      String
+  name             String
+  brand            String
+  category         String
+  costPrice        Float
+  sellingPrice     Float
+  unitName         String
+  unitsPerBulk     Int?
+  bulkSellingPrice Float?
+  bulkUnitName     String?
+  image            String?
+  description      String?
+  keywords         String[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  storeType        StoreTypeDef @relation(fields: [storeTypeId], references: [id], onDelete: Cascade)
+}
+
+model Store {
+  id             String              @id @default(cuid())
+  email          String?             @unique
+  businessName   String?
+  ownerFullName  String?
+  phone          String?
+  gender         Gender?
+  dob            DateTime?
+  passwordHash   String?
+  storeType      StoreType?
+  operationType  StoreOperationType?
+  currency       Currency            @default(NGN)
+  logo           String?
+  setupCompleted Boolean             @default(false)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  credits        Credit[]
+  products       Product[]
+  restocks       Restock[]
+  sales          Sale[]
+  workers        Worker[]
+}
+
+model Worker {
+  id        String   @id @default(cuid())
+  name      String
+  pin       String
+  storeId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sales     Sale[]
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@unique([storeId, pin])
+}
+
+model Product {
+  id               String     @id @default(cuid())
+  name             String
+  brand            String
+  category         String
+  costPrice        Float
+  sellingPrice     Float
+  quantity         Int
+  unitName         String     @default("Piece")
+  unitsPerBulk     Int?
+  bulkSellingPrice Float?
+  bulkUnitName     String?
+  image            String?
+  storeId          String
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  store            Store      @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  restocks         Restock[]
+  saleItems        SaleItem[]
+
+  @@unique([storeId, name, brand])
+  @@index([storeId])
+  @@index([storeId, category])
+  @@index([storeId, name])
+}
+
+model Sale {
+  id               String        @id @default(cuid())
+  transactionId    String        @unique
+  storeId          String
+  workerId         String
+  totalPrice       Float
+  totalCost        Float
+  amountPaid       Float
+  remainingBalance Float
+  paymentStatus    String        @default("completed")
+  paymentMethod    String        @default("cash")
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  credits          Credit[]
+  store            Store         @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  worker           Worker        @relation(fields: [workerId], references: [id])
+  items            SaleItem[]
+  salePayments     SalePayment[]
+}
+
+model SaleItem {
+  id         String   @id @default(cuid())
+  saleId     String
+  productId  String
+  quantity   Int
+  sellByBulk Boolean  @default(false)
+  unitPrice  Float
+  totalPrice Float
+  costPrice  Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  product    Product  @relation(fields: [productId], references: [id])
+  sale       Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+}
+
+model Credit {
+  id               String          @id @default(cuid())
+  customerName     String
+  phoneNumber      String?
+  saleId           String?
+  storeId          String
+  totalOwed        Float
+  totalPaid        Float           @default(0)
+  remainingBalance Float
+  isStoreCredit    Boolean         @default(false)
+  paymentStatus    String          @default("pending")
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  sale             Sale?           @relation(fields: [saleId], references: [id])
+  store            Store           @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  payments         CreditPayment[]
+
+  @@index([storeId])
+}
+
+model CreditPayment {
+  id        String   @id @default(cuid())
+  creditId  String
+  amount    Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  credit    Credit   @relation(fields: [creditId], references: [id], onDelete: Cascade)
+}
+
+model SalePayment {
+  id        String   @id @default(cuid())
+  saleId    String
+  amount    Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sale      Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+}
+
+model Restock {
+  id        String   @id @default(cuid())
+  productId String
+  storeId   String
+  quantity  Int
+  costPrice Float
+  totalCost Float
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+}
+
+model SyncLog {
+  id        String   @id @default(cuid())
+  action    String
+  entityId  String
+  data      Json
+  synced    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum StoreType {
+  EATERY
+  COSMETICS
+  GROCERY
+  PROVISIONS
+  PHARMACY
+  FASHION
+  ELECTRONICS
+  GENERAL
+  BAKERY
+  BOOKSTORE
+  STATIONERY
+  BEVERAGES
+  GARDEN
+  HOME
+  TOYS
+}
+
+enum Currency {
+  NGN
+  USD
+  GBP
+  EUR
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum StoreOperationType {
+  PHYSICAL
+  ONLINE
+  HYBRID
+}

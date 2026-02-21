@@ -1,0 +1,33 @@
+{
+	"name": "pures-web-pos",
+	"version": "0.1.0",
+	"private": true,
+	"workspaces": [
+		"apps/merchant",
+		"apps/admin",
+		"packages/*"
+	],
+	"scripts": {
+		"dev": "concurrently \"npm run dev -w pures-merchant\" \"npm run dev -w pures-admin\"",
+		"dev:merchant": "npm run dev -w pures-merchant",
+		"dev:admin": "npm run dev -w pures-admin",
+		"build": "npm run build -w @repo/db && npm run build -w pures-merchant && npm run build -w pures-admin",
+		"build:merchant": "npm run build -w @repo/db && npm run build -w pures-merchant",
+		"build:admin": "npm run build -w @repo/db && npm run build -w pures-admin",
+		"start": "npm run start -w pures-merchant",
+		"start:all": "concurrently \"npm run start -w pures-merchant\" \"npm run start -w pures-admin\"",
+		"lint": "npm run lint -w pures-merchant && npm run lint -w pures-admin",
+		"db:migrate": "npm -w @repo/db run migrate",
+		"db:seed": "npm -w @repo/db run seed",
+		"db:generate": "npm -w @repo/db run generate",
+		"test": "jest"
+	},
+	"devDependencies": {
+		"concurrently": "^8.2.0",
+		"dotenv-cli": "^7.4.2",
+		"jest": "^29.6.1",
+		"@types/jest": "^29.5.3",
+		"typescript": "^5.3.3",
+		"ts-jest": "^29.1.0"
+	}
+}
