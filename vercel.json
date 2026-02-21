@@ -1,5 +1,0 @@
-{
-  "buildCommand": "npm run build:merchant",
-  "outputDirectory": "apps/merchant/.next",
-  "installCommand": "npm install"
-}

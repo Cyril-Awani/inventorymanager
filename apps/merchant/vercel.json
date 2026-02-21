@@ -1,0 +1,5 @@
+{
+  "buildCommand": "npm run build -w pures-merchant",
+  "outputDirectory": ".next",
+  "installCommand": "npm install --legacy-peer-deps"
+}
